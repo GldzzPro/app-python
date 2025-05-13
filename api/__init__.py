@@ -1,11 +1,8 @@
-from datetime import timedelta
-from email import policy
 import os
 
 from flask import Flask
 from flask.helpers import send_from_directory
 
-from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 from api.exceptions.notfound import NotFoundException
@@ -15,7 +12,6 @@ from .exceptions.validation import ValidationException
 
 from .neo4j import init_driver
 
-from .routes.auth import auth_routes
 from .routes.account import account_routes
 from .routes.movies import movie_routes
 from .routes.genres import genre_routes
@@ -31,11 +27,7 @@ def create_app(test_config=None):
         NEO4J_URI=os.getenv('NEO4J_URI'),
         NEO4J_USERNAME=os.getenv('NEO4J_USERNAME'),
         NEO4J_PASSWORD=os.getenv('NEO4J_PASSWORD'),
-        NEO4J_DATABASE=os.getenv('NEO4J_DATABASE'),
-        JWT_SECRET_KEY=os.getenv('JWT_SECRET'),
-        JWT_AUTH_HEADER_PREFIX="Bearer",
-        JWT_VERIFY_CLAIMS="signature",
-        JWT_EXPIRATION_DELTA=timedelta(360)
+        NEO4J_DATABASE=os.getenv('NEO4J_DATABASE')
     )
 
     # Apply Test Config
@@ -55,15 +47,11 @@ def create_app(test_config=None):
             app.config.get('NEO4J_PASSWORD'),
         )
 
-    # JWT
-    jwt = JWTManager(app)
-
     CORS(app, 
         resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]}}
     )
     
     # Register Routes
-    app.register_blueprint(auth_routes)
     app.register_blueprint(account_routes)
     app.register_blueprint(genre_routes)
     app.register_blueprint(movie_routes)

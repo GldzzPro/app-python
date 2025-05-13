@@ -1,5 +1,4 @@
 from flask import Blueprint, current_app, request, jsonify
-from flask_jwt_extended import current_user
 
 from api.dao.auth import AuthDAO
 
@@ -13,11 +12,11 @@ def register():
     password = form_data['password']
     name = form_data['name']
 
-    dao = AuthDAO(current_app.driver, current_app.config.get('SECRET_KEY'))
+    dao = AuthDAO(current_app.driver)
 
     user = dao.register(email, password, name)
 
-    return user
+    return jsonify(user)
 
 
 @auth_routes.route('/login', methods=['POST'])
@@ -27,11 +26,8 @@ def login():
     email = form_data['email']
     password = form_data['password']
 
-    dao = AuthDAO(current_app.driver, current_app.config.get('SECRET_KEY'))
+    dao = AuthDAO(current_app.driver)
 
     user = dao.authenticate(email, password)
-
-    if user is False:
-        return "Unauthorized", 401
 
     return jsonify(user)

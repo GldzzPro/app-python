@@ -42,3 +42,71 @@ export FLASK_APP=api
 export FLASK_ENV=development
 flask run
 
+== Neo4j Scaffold
+
+This repository includes a minimal Neo4j schema and ingest prototype that demonstrates how to:
+
+* Create and enforce schema constraints
+* Create and query Module and Instance nodes
+* Establish relationships between nodes
+
+=== Installation
+
+Install the required dependencies:
+
+[source,sh]
+----
+pip install -r requirements.txt
+----
+
+=== Configuration
+
+Copy the example environment file and update it with your Neo4j AuraDB credentials:
+
+[source,sh]
+----
+cp .env.example .env
+----
+
+Edit the `.env` file to include your Neo4j connection details:
+
+[source]
+----
+NEO4J_URI=neo4j+s://your-aura-instance-id.databases.neo4j.io
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=your-password
+----
+
+=== Initialize Database Schema
+
+Run the initialization script to create the necessary constraints and indexes:
+
+[source,sh]
+----
+python init_db.py
+----
+
+=== Ingest Mock Data
+
+Populate the database with sample data:
+
+[source,sh]
+----
+python ingest_mock.py
+----
+
+=== Run Tests
+
+Verify that the schema and data ingestion worked correctly:
+
+=== Authentication
+
+**No Auth Required**
+
+This service runs with admin privileges solely via Neo4j credentials. All endpoints operate with superuser access, with no JWT or OAuth2 authentication required. The application uses only the Neo4j connection parameters (NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD) for database access.
+
+[source,sh]
+----
+pytest tests/test_schema_and_ingest.py -v
+----
+

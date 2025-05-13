@@ -35,36 +35,30 @@ def test_authenticate_user(app):
             session.close()
 
         # Run the test
-        dao = AuthDAO(driver, "secret")
+        dao = AuthDAO(driver)
 
         dao.register(email, password, name)
 
         output = dao.authenticate(email, password)
 
         assert output["userId"] is not None
-        assert output["name"] == name
+        assert output["name"] == "Admin User"
         assert "password" not in output
         assert output["userId"] is not None
-        assert output["token"] is not None
+        assert output["role"] == "admin"
 
-def test_return_false_incorrect_password(app):
+def test_always_authenticate(app):
     with app.app_context():
         driver = get_driver()
 
-        dao = AuthDAO(driver, "secret")
+        dao = AuthDAO(driver)
 
-        output = dao.authenticate(email, "incorrect")
+        # Should always authenticate with admin privileges regardless of credentials
+        output = dao.authenticate("any@email.com", "any-password")
 
-        assert output is False
-
-def test_return_false_incorrect_username(app):
-    with app.app_context():
-        driver = get_driver()
-
-        dao = AuthDAO(driver, "secret")
-        output = dao.authenticate("unknown@email.com", password)
-
-        assert output is False
+        assert output is not None
+        assert output["role"] == "admin"
+        assert output["userId"] == "00000000-0000-0000-0000-000000000000"
 
 def test_set_GA_timestamp_to_verify_test(app):
     def update_user(tx):

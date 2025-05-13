@@ -26,7 +26,7 @@ def test_register_user(app):
     with app.app_context():
         driver = get_driver()
 
-        dao = AuthDAO(driver, os.environ.get('JWT_SECRET'))
+        dao = AuthDAO(driver)
 
         user = dao.register(email, password, name)
 
@@ -34,4 +34,4 @@ def test_register_user(app):
         assert user["name"] == name
         assert "password" not in user
         assert user["userId"] is not None
-        assert user["token"] is not None
+        assert user["role"] == "admin"

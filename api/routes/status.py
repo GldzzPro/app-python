@@ -9,6 +9,5 @@ def get_index():
         "NEO4J_URI": current_app.config.get('NEO4J_URI'),
         "NEO4J_USERNAME": current_app.config.get('NEO4J_USERNAME'),
         "NEO4J_PASSWORD": current_app.config.get('NEO4J_PASSWORD'),
-        "NEO4J_DATABASE": current_app.config.get('NEO4J_DATABASE'),
-        "JWT_SECRET": current_app.config.get('JWT_SECRET'),
+        "NEO4J_DATABASE": current_app.config.get('NEO4J_DATABASE')
     })

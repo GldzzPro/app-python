@@ -1,5 +1,4 @@
 from flask import Blueprint, current_app, request, jsonify
-from flask_jwt_extended import current_user, jwt_required
 
 from api.dao.movies import MovieDAO
 from api.dao.ratings import RatingDAO
@@ -8,7 +7,6 @@ movie_routes = Blueprint("movies", __name__, url_prefix="/api/movies")
 
 # tag::list[]
 @movie_routes.get('/')
-@jwt_required(optional=True)
 def get_movies():
     # Extract pagination values from the request
     sort = request.args.get("sort", "title")
@@ -16,8 +14,8 @@ def get_movies():
     limit = request.args.get("limit", 6, type=int)
     skip = request.args.get("skip", 0, type=int)
 
-    # Get User ID from JWT Auth
-    user_id = current_user["sub"] if current_user != None else None
+    # Admin access - no auth required
+    user_id = "00000000-0000-0000-0000-000000000000"
 
     # Create a new MovieDAO Instance
     dao = MovieDAO(current_app.driver)
@@ -31,10 +29,9 @@ def get_movies():
 
 
 @movie_routes.get('/<movie_id>')
-@jwt_required(optional=True)
 def get_movie_details(movie_id):
-    # Get User ID from JWT Auth
-    user_id = current_user["sub"] if current_user != None else None
+    # Admin access - no auth required
+    user_id = "00000000-0000-0000-0000-000000000000"
 
     # Create a new MovieDAO Instance
     dao = MovieDAO(current_app.driver)
@@ -63,10 +60,9 @@ def get_movie_ratings(movie_id):
 
 
 @movie_routes.get('/<movie_id>/similar')
-@jwt_required(optional=True)
 def get_similar_movies(movie_id):
-    # Get User ID from JWT Auth
-    user_id = current_user["sub"] if current_user != None else None
+    # Admin access - no auth required
+    user_id = "00000000-0000-0000-0000-000000000000"
 
     # Extract pagination values from the request
     limit = request.args.get("limit", 6, type=int)

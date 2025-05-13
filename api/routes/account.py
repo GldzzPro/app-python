@@ -1,5 +1,4 @@
 from flask import Blueprint, current_app, request, jsonify
-from flask_jwt_extended import current_user, jwt_required
 
 from api.dao.favorites import FavoriteDAO
 from api.dao.ratings import RatingDAO
@@ -7,15 +6,20 @@ from api.dao.ratings import RatingDAO
 account_routes = Blueprint("account", __name__, url_prefix="/api/account")
 
 @account_routes.route('/', methods=['GET'])
-@jwt_required()
 def get_profile():
-    return jsonify(current_user)
+    # Admin user profile
+    admin_user = {
+        "userId": "00000000-0000-0000-0000-000000000000",
+        "email": "admin@neo4j.com",
+        "name": "Admin User",
+        "role": "admin"
+    }
+    return jsonify(admin_user)
 
 @account_routes.route('/favorites', methods=['GET'])
-@jwt_required()
 def get_favorites():
-    # Get user ID from JWT
-    user_id = current_user["sub"]
+    # Admin access - no auth required
+    user_id = "00000000-0000-0000-0000-000000000000"
 
     # Get search parameters
     sort = request.args.get("sort", "title")
@@ -31,10 +35,9 @@ def get_favorites():
     return jsonify(output)
 
 @account_routes.route('/favorites/<movie_id>', methods=['POST', 'DELETE'])
-@jwt_required()
 def add_favorite(movie_id):
-    # Get user ID from JWT
-    user_id = current_user["sub"]
+    # Admin access - no auth required
+    user_id = "00000000-0000-0000-0000-000000000000"
 
     # Create the DAO
     dao = FavoriteDAO(current_app.driver)
@@ -51,10 +54,9 @@ def add_favorite(movie_id):
 
 
 @account_routes.route('/ratings/<movie_id>', methods=['POST'])
-@jwt_required()
 def save_rating(movie_id):
-    # Get user ID from JWT
-    user_id = current_user["sub"]
+    # Admin access - no auth required
+    user_id = "00000000-0000-0000-0000-000000000000"
 
     # Get rating from Request
     form_data = request.get_json()
